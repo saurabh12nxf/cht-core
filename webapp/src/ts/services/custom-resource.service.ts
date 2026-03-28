@@ -7,7 +7,7 @@ import { DOC_IDS } from '@medic/constants';
 @Injectable({
   providedIn: 'root'
 })
-export class ResourceIconsService {
+export class CustomResourceService {
   private readonly CSS_CLASS = ['resource-icon', 'header-logo', 'partner-image'];
   private readonly RESOURCE_DOC_IDS = [DOC_IDS.RESOURCES, 'branding', DOC_IDS.PARTNERS];
 
@@ -122,6 +122,10 @@ export class ResourceIconsService {
 
   getAppTitle() {
     return this.db.get().get(this.RESOURCE_DOC_IDS[1]).then(doc => doc.title);
+  }
+
+  getResource(name: string): { content_type: string, data: string } | null {
+    return this.getAttachment(name, DOC_IDS.RESOURCES);
   }
 
   replacePlaceholders($elem) {
