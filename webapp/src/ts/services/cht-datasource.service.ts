@@ -27,9 +27,9 @@ export class CHTDatasourceService {
     private sessionService: SessionService,
     private settingsService: SettingsService,
     private changesService: ChangesService,
-    private dbService: DbService,
-    private translateService: TranslateService,
-    private customResourceService: CustomResourceService
+    private readonly dbService: DbService,
+    private readonly translateService: TranslateService,
+    private readonly customResourceService: CustomResourceService
   ) { }
 
   isInitialized() {

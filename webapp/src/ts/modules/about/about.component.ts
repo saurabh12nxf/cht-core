@@ -63,7 +63,7 @@ export class AboutComponent implements OnInit, OnDestroy {
   constructor(
     private dbService: DbService,
     private store: Store,
-    private customResourceService: CustomResourceService,
+    private readonly customResourceService: CustomResourceService,
     private sessionService: SessionService,
     private versionService: VersionService,
     private translateService: TranslateService,

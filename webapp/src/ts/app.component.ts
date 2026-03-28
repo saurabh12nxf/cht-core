@@ -125,7 +125,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     private setLanguageService:SetLanguageService,
     private sessionService:SessionService,
     private authService:AuthService,
-    private customResourceService:CustomResourceService,
+    private readonly customResourceService:CustomResourceService,
     private changesService:ChangesService,
     private updateServiceWorker:UpdateServiceWorkerService,
     private locationService:LocationService,

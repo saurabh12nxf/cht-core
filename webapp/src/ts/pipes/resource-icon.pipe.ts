@@ -12,7 +12,7 @@ import { DOC_IDS } from '@medic/constants';
 })
 export class ResourceIconPipe implements PipeTransform {
   constructor(
-    private resourceIcons: CustomResourceService,
+    private readonly resourceIcons: CustomResourceService,
     private sanitizer: DomSanitizer,
   ) { }
 
@@ -29,7 +29,7 @@ export class ResourceIconPipe implements PipeTransform {
 })
 export class HeaderLogoPipe implements PipeTransform {
   constructor(
-    private resourceIcons: CustomResourceService,
+    private readonly resourceIcons: CustomResourceService,
     private sanitizer: DomSanitizer
   ) { }
 
@@ -46,7 +46,7 @@ export class HeaderLogoPipe implements PipeTransform {
 })
 export class PartnerImagePipe implements PipeTransform {
   constructor(
-    private resourceIcons: CustomResourceService,
+    private readonly resourceIcons: CustomResourceService,
     private sanitizer: DomSanitizer,
   ) { }
 

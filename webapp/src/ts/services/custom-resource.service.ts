@@ -11,7 +11,7 @@ export class CustomResourceService {
   private readonly CSS_CLASS = ['resource-icon', 'header-logo', 'partner-image'];
   private readonly RESOURCE_DOC_IDS = [DOC_IDS.RESOURCES, 'branding', DOC_IDS.PARTNERS];
 
-  private initResources;
+  private readonly initResources;
 
   private readonly cache = {
     resources: {
@@ -29,8 +29,8 @@ export class CustomResourceService {
   };
 
   constructor(
-    private changes: ChangesService,
-    private db: DbService,
+    private readonly changes: ChangesService,
+    private readonly db: DbService,
   ) {
     this.RESOURCE_DOC_IDS.slice(1).forEach(doc => this.updateResources(doc));
     this.initResources = this.updateResources(this.RESOURCE_DOC_IDS[0]);
@@ -43,9 +43,8 @@ export class CustomResourceService {
   }
 
   private getAttachment (name, i) {
-    return this.cache[i].doc &&
-      this.cache[i].doc.resources[name] &&
-      this.cache[i].doc._attachments[this.cache[i].doc.resources[name]];
+    return this.cache[i].doc?.resources[name] &&
+      this.cache[i].doc?._attachments[this.cache[i].doc.resources[name]];
   }
 
   private getHtmlContent(name, i, faPlaceholder) {
@@ -66,7 +65,8 @@ export class CustomResourceService {
         this.cache[i].htmlContent[name] = content;
       }
       return this.cache[i].htmlContent[name];
-    } catch (_) {
+    } catch (error) {
+      console.error('Error getting HTML content:', error);
       return '&nbsp';
     }
   }
