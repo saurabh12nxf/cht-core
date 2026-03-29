@@ -42,9 +42,9 @@ export class CustomResourceService {
     });
   }
 
-  private getAttachment (name, i) {
-    return this.cache[i].doc?.resources[name] &&
-      this.cache[i].doc?._attachments[this.cache[i].doc.resources[name]];
+  private getAttachment (name, docId) {
+    return this.cache[docId].doc?.resources[name] &&
+      this.cache[docId].doc?._attachments[this.cache[docId].doc.resources[name]];
   }
 
   private formatIconContent(icon, docId) {
@@ -56,16 +56,16 @@ export class CustomResourceService {
     return `<img src="data:${icon.content_type};base64,${icon.data}" />`;
   }
 
-  private getHtmlContent(name, i, faPlaceholder) {
+  private getHtmlContent(name, docId, faPlaceholder) {
     try {
-      if (!this.cache[i].htmlContent[name]) {
-        const icon = this.getAttachment(name, i);
+      if (!this.cache[docId].htmlContent[name]) {
+        const icon = this.getAttachment(name, docId);
         if (!icon) {
           return faPlaceholder ? `<span class="fa ${faPlaceholder}"/>` : '';
         }
-        this.cache[i].htmlContent[name] = this.formatIconContent(icon, i);
+        this.cache[docId].htmlContent[name] = this.formatIconContent(icon, docId);
       }
-      return this.cache[i].htmlContent[name];
+      return this.cache[docId].htmlContent[name];
     } catch (error) {
       console.error('Error getting HTML content:', error);
       return '&nbsp';
