@@ -56,16 +56,25 @@ export class CustomResourceService {
     return `<img src="data:${icon.content_type};base64,${icon.data}" />`;
   }
 
+  private getFallbackContent(faPlaceholder) {
+    return faPlaceholder ? `<span class="fa ${faPlaceholder}"/>` : '';
+  }
+
+  private buildAndCacheContent(name, docId, faPlaceholder) {
+    const icon = this.getAttachment(name, docId);
+    if (!icon) {
+      return this.getFallbackContent(faPlaceholder);
+    }
+    this.cache[docId].htmlContent[name] = this.formatIconContent(icon, docId);
+    return this.cache[docId].htmlContent[name];
+  }
+
   private getHtmlContent(name, docId, faPlaceholder) {
     try {
-      if (!this.cache[docId].htmlContent[name]) {
-        const icon = this.getAttachment(name, docId);
-        if (!icon) {
-          return faPlaceholder ? `<span class="fa ${faPlaceholder}"/>` : '';
-        }
-        this.cache[docId].htmlContent[name] = this.formatIconContent(icon, docId);
+      if (this.cache[docId].htmlContent[name]) {
+        return this.cache[docId].htmlContent[name];
       }
-      return this.cache[docId].htmlContent[name];
+      return this.buildAndCacheContent(name, docId, faPlaceholder);
     } catch (error) {
       console.error('Error getting HTML content:', error);
       return '&nbsp';
