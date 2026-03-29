@@ -47,6 +47,15 @@ export class CustomResourceService {
       this.cache[i].doc?._attachments[this.cache[i].doc.resources[name]];
   }
 
+  private formatIconContent(icon, docId) {
+    if (icon.content_type === 'image/svg+xml' && docId === DOC_IDS.RESOURCES) {
+      // SVG: include the raw data in the page so it can be styled
+      return atob(icon.data);
+    }
+    // OTHER: base64 encode the img src
+    return `<img src="data:${icon.content_type};base64,${icon.data}" />`;
+  }
+
   private getHtmlContent(name, i, faPlaceholder) {
     try {
       if (!this.cache[i].htmlContent[name]) {
@@ -54,15 +63,7 @@ export class CustomResourceService {
         if (!icon) {
           return faPlaceholder ? `<span class="fa ${faPlaceholder}"/>` : '';
         }
-        let content;
-        if (icon.content_type === 'image/svg+xml' && i === DOC_IDS.RESOURCES) {
-          // SVG: include the raw data in the page so it can be styled
-          content = atob(icon.data);
-        } else {
-          // OTHER: base64 encode the img src
-          content = `<img src="data:${icon.content_type};base64,${icon.data}" />`;
-        }
-        this.cache[i].htmlContent[name] = content;
+        this.cache[i].htmlContent[name] = this.formatIconContent(icon, i);
       }
       return this.cache[i].htmlContent[name];
     } catch (error) {
@@ -125,7 +126,9 @@ export class CustomResourceService {
   }
 
   getResource(name: string): { content_type: string, data: string } | null {
-    return this.getAttachment(name, DOC_IDS.RESOURCES);
+    const attachment = this.getAttachment(name, DOC_IDS.RESOURCES);
+    // Return null if cache is not populated (doc is null), undefined if resource doesn't exist
+    return this.cache[DOC_IDS.RESOURCES].doc === null ? null : attachment;
   }
 
   replacePlaceholders($elem) {
