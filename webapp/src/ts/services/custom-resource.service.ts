@@ -32,13 +32,24 @@ export class CustomResourceService {
     private readonly changes: ChangesService,
     private readonly db: DbService,
   ) {
-    this.RESOURCE_DOC_IDS.slice(1).forEach(doc => this.updateResources(doc));
-    this.initResources = this.updateResources(this.RESOURCE_DOC_IDS[0]);
+    // Initialize resources asynchronously with error handling to prevent feedback docs
+    this.RESOURCE_DOC_IDS.slice(1).forEach(doc => {
+      this.updateResources(doc).catch(() => {
+        // Silently ignore initialization errors (e.g., 404 for optional docs)
+      });
+    });
+    this.initResources = this.updateResources(this.RESOURCE_DOC_IDS[0]).catch(() => {
+      // Silently ignore initialization errors
+    });
 
     this.changes.subscribe({
       key: 'resource-icons',
       filter: change => this.RESOURCE_DOC_IDS.includes(change.id),
-      callback: change => this.updateResources(change.id),
+      callback: change => {
+        this.updateResources(change.id).catch(() => {
+          // Silently ignore update errors
+        });
+      },
     });
   }
 
@@ -111,6 +122,7 @@ export class CustomResourceService {
         this.updateDom($(document.body), docId);
       })
       .catch(err => {
+        // Silently ignore 404 errors as these docs are optional
         if (err.status !== 404) {
           console.error('Error updating icons', err);
         }
