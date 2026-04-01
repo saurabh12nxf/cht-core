@@ -78,7 +78,7 @@ const oidcServerSConfig = async () => {
     claims_supported,
     scopes_supported,
   })}`);
-  return idServerConfig;
+  return { idServerConfig, oidcProvider: settings.oidc_provider };
 };
 
 /**
@@ -93,8 +93,12 @@ const getAuthorizationUrl = async (redirectUrl) => {
     scope: 'openid email'
   };
 
-  const serverConfig = await oidcServerSConfig();
-  return client.buildAuthorizationUrl(serverConfig, params);
+  const { idServerConfig, oidcProvider } = await oidcServerSConfig();
+  if (oidcProvider.max_age !== undefined && oidcProvider.max_age !== null) {
+    params.max_age = oidcProvider.max_age;
+  }
+
+  return client.buildAuthorizationUrl(idServerConfig, params);
 };
 
 const getLocale = async (localeClaim) => {
@@ -115,11 +119,15 @@ const getLocale = async (localeClaim) => {
  * @returns {object} Token id and user details.
  */
 const getIdToken = async (currentUrl) => {
-  const serverConfig = await oidcServerSConfig();
+  const { idServerConfig, oidcProvider } = await oidcServerSConfig();
+  const checks = { idTokenExpected: true };
+  if (oidcProvider.max_age !== undefined && oidcProvider.max_age !== null) {
+    checks.maxAge = oidcProvider.max_age;
+  }
   const authorizationCodeGrant = () => client.authorizationCodeGrant(
-    serverConfig,
+    idServerConfig,
     currentUrl,
-    { idTokenExpected: true }
+    checks
   );
   const tokens = await authServerCallRetry(authorizationCodeGrant);
   const { email, locale } = tokens.claims();
