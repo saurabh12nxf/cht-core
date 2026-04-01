@@ -42,9 +42,10 @@ export class CustomResourceService {
     });
   }
 
-  private getAttachment (name, docId) {
-    return this.cache[docId].doc?.resources[name] &&
-      this.cache[docId].doc?._attachments[this.cache[docId].doc.resources[name]];
+  private getAttachment(name, docId) {
+    const doc = this.cache[docId]?.doc;
+    const resourcePath = doc?.resources?.[name];
+    return resourcePath ? doc?._attachments?.[resourcePath] : undefined;
   }
 
   private formatIconContent(icon, docId) {
@@ -70,16 +71,15 @@ export class CustomResourceService {
   }
 
   private getHtmlContent(name, docId, faPlaceholder) {
-    try {
-      if (this.cache[docId].htmlContent[name]) {
-        return this.cache[docId].htmlContent[name];
-      }
-      return this.buildAndCacheContent(name, docId, faPlaceholder);
-    } catch (_) {
-      // Intentionally catch and ignore errors when cache is not yet initialized
-      // This occurs during app startup before resources are loaded
+    if (!this.cache[docId]?.htmlContent) {
       return '&nbsp';
     }
+
+    if (this.cache[docId].htmlContent[name]) {
+      return this.cache[docId].htmlContent[name];
+    }
+    
+    return this.buildAndCacheContent(name, docId, faPlaceholder);
   }
 
   private getHtml (name, docId, faPlaceholder) {
