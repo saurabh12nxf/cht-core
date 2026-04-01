@@ -33,6 +33,7 @@ export class CustomResourceService {
     private readonly db: DbService,
   ) {
     // Initialize resources asynchronously with error handling to prevent feedback docs
+    // Resource documents are optional and may not exist in test environments
     this.RESOURCE_DOC_IDS.slice(1).forEach(doc => {
       this.updateResources(doc).catch(() => {
         // Silently ignore initialization errors (e.g., 404 for optional docs)
@@ -86,8 +87,7 @@ export class CustomResourceService {
         return this.cache[docId].htmlContent[name];
       }
       return this.buildAndCacheContent(name, docId, faPlaceholder);
-    } catch (error) {
-      console.error('Error getting HTML content:', error);
+    } catch (_) {
       return '&nbsp';
     }
   }
