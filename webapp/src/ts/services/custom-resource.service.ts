@@ -76,6 +76,8 @@ export class CustomResourceService {
       }
       return this.buildAndCacheContent(name, docId, faPlaceholder);
     } catch (_) {
+      // Intentionally catch and ignore errors when cache is not yet initialized
+      // This occurs during app startup before resources are loaded
       return '&nbsp';
     }
   }
