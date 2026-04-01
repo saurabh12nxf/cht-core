@@ -32,25 +32,13 @@ export class CustomResourceService {
     private readonly changes: ChangesService,
     private readonly db: DbService,
   ) {
-    // Initialize resources asynchronously with error handling to prevent feedback docs
-    // Resource documents are optional and may not exist in test environments
-    this.RESOURCE_DOC_IDS.slice(1).forEach(doc => {
-      this.updateResources(doc).catch(() => {
-        // Silently ignore initialization errors (e.g., 404 for optional docs)
-      });
-    });
-    this.initResources = this.updateResources(this.RESOURCE_DOC_IDS[0]).catch(() => {
-      // Silently ignore initialization errors
-    });
+    this.RESOURCE_DOC_IDS.slice(1).forEach(doc => this.updateResources(doc));
+    this.initResources = this.updateResources(this.RESOURCE_DOC_IDS[0]);
 
     this.changes.subscribe({
       key: 'resource-icons',
       filter: change => this.RESOURCE_DOC_IDS.includes(change.id),
-      callback: change => {
-        this.updateResources(change.id).catch(() => {
-          // Silently ignore update errors
-        });
-      },
+      callback: change => this.updateResources(change.id),
     });
   }
 
