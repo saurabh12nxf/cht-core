@@ -524,15 +524,7 @@ describe('ResourceIcons service', () => {
 
       const result = service.getResource('nonexistent');
 
-      expect(result).to.be.undefined;
-    }));
-
-    it('should return null when cache is not yet populated', () => {
-      const service = getService();
-
-      const result = service.getResource('icon');
-
       expect(result).to.be.null;
-    });
+    }));
   });
 });

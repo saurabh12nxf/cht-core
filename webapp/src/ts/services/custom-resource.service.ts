@@ -45,7 +45,7 @@ export class CustomResourceService {
   private getAttachment(name, docId) {
     const doc = this.cache[docId]?.doc;
     const resourcePath = doc?.resources?.[name];
-    return resourcePath ? doc?._attachments?.[resourcePath] : undefined;
+    return resourcePath ? doc?._attachments?.[resourcePath] : null;
   }
 
   private formatIconContent(icon, docId) {
@@ -112,7 +112,6 @@ export class CustomResourceService {
         this.updateDom($(document.body), docId);
       })
       .catch(err => {
-        // Silently ignore 404 errors as these docs are optional
         if (err.status !== 404) {
           console.error('Error updating icons', err);
         }
@@ -137,9 +136,7 @@ export class CustomResourceService {
   }
 
   getResource(name: string): { content_type: string, data: string } | null {
-    const attachment = this.getAttachment(name, DOC_IDS.RESOURCES);
-    // Return null if cache is not populated (doc is null), undefined if resource doesn't exist
-    return this.cache[DOC_IDS.RESOURCES].doc === null ? null : attachment;
+    return this.getAttachment(name, DOC_IDS.RESOURCES);
   }
 
   replacePlaceholders($elem) {
