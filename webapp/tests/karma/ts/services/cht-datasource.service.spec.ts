@@ -300,7 +300,6 @@ describe('CHTScriptApiService service', () => {
 
   describe('v1.translate()', () => {
     it('should call TranslateService.instant with key', async () => {
-      settingsService.get.resolves();
       translateService.instant.returns('Translated Text');
       await service.isInitialized();
       const api = await service.get();
@@ -312,7 +311,6 @@ describe('CHTScriptApiService service', () => {
     });
 
     it('should call TranslateService.instant with key and params', async () => {
-      settingsService.get.resolves();
       translateService.instant.returns('Hello John');
       await service.isInitialized();
       const api = await service.get();
@@ -326,7 +324,6 @@ describe('CHTScriptApiService service', () => {
 
   describe('v1.getResource()', () => {
     it('should call CustomResourceService.getResource', async () => {
-      settingsService.get.resolves();
       const resourceData = { content_type: 'image/png', data: 'base64data' };
       customResourceService.getResource.returns(resourceData);
       await service.isInitialized();
@@ -339,7 +336,6 @@ describe('CHTScriptApiService service', () => {
     });
 
     it('should return null when resource does not exist', async () => {
-      settingsService.get.resolves();
       customResourceService.getResource.returns(null);
       await service.isInitialized();
       const api = await service.get();
